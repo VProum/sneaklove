@@ -30,5 +30,4 @@ router.get("/prod-add", (req, res, next) => {
 })
 
 
-
 module.exports = router;
