@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 mongoose.connect(process.env.FAKE_URI, {
   useNewUrlParser: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useUnifiedTopology: true,
 });
 
 mongoose.connection.on("connected", () => console.log("yay mongodb connected :)"));

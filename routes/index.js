@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-return console.log(`\n\n
+console.log(`\n\n
 -----------------------------
 -----------------------------
      wax on / wax off !
@@ -10,24 +10,25 @@ return console.log(`\n\n
 );
 
 router.get("/", (req, res) => {
-  res.send("foo");
+  res.render("index");
 });
 
-router.get("/sneakers/:cat", (req, res) => {
-  res.send("bar");
-});
 
-router.get("/one-product/:id", (req, res) => {
-  res.send("baz");
-});
+
 
 router.get("/signup", (req, res) => {
-  res.send("sneak");
+  res.render("signup");
 });
 
 router.get("/signin", (req, res) => {
-  res.send("love");
+  res.render("signin");
 });
+
+
+router.get("/prod-add", (req, res, next) => {
+  res.redirect("/sneakers/create");
+})
+
 
 
 module.exports = router;
