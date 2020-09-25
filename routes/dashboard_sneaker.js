@@ -11,11 +11,31 @@ router.get("/sneakers/create", async (req, res, next) => {
   try {
     const tags = await Tag.find();
     const collections = await Collection.find();
-    res.render("products_add", { scripts: ["create.js"], tags, collections});
+    res.render("products_add", { tags, collections});
   } catch (error) {
     next(error);
   }
 });
+
+router.get("/tags", async (req, res, next) => {
+    try {
+        console.log(req.query);
+      const tags = await Sneaker.find(req.query);
+      res.send(tags);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.get("/tags/:gender", async (req, res, next) => {
+    try {
+      const tags = await Sneaker.find({$and: [{"category" : req.params.gender}, req.query]});
+      res.send(tags);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
 
 router.get("/sneakers/collection", async (req, res, next) => {
   try {
@@ -23,7 +43,7 @@ router.get("/sneakers/collection", async (req, res, next) => {
     const sneakers = await Sneaker.find();
     const collections = await Collection.find();
 
-    res.render("products", { tags, sneakers, collections });
+    res.render("products", { scripts: ["ajax.styles.js"], tags, sneakers, collections });
   } catch (error) {
     next(error);
   }
@@ -31,15 +51,17 @@ router.get("/sneakers/collection", async (req, res, next) => {
 
 router.get("/one-product/:id", async (req, res) => {
   try {
+    const collections = await Collection.find();
     const sneaker = await Sneaker.findById(req.params.id);
-    res.render("one_product", { sneaker });
+    res.render("one_product", { sneaker, collections });
   } catch (error) {}
 });
 
 router.get("/prod-manage", async (req, res, next) => {
   try {
+    const collections = await Collection.find();
     const sneakers = await Sneaker.find();
-    res.render("products_manage", { sneakers });
+    res.render("products_manage", { sneakers, collections });
   } catch (error) {
     next(error);
   }
@@ -70,7 +92,7 @@ router.get("/sneakers/:collection", async (req, res, next) => {
       const tags = await Tag.find();
       const collections = await Collection.find();
       const sneakers = await Sneaker.find({"category" : req.params.collection});
-      res.render("products", { sneakers, tags, collections });
+      res.render("products", { scripts: ["ajax.styles.gender.js"], sneakers, tags, collections });
     } catch (error) {
       next(error);
     }

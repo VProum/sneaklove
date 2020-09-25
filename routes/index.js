@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const Collection = require("../models/Collection");
 
 console.log(`\n\n
 -----------------------------
@@ -9,24 +10,28 @@ console.log(`\n\n
 -----------------------------\n\n`
 );
 
-router.get("/", (req, res) => {
-  res.render("index");
+router.get("/", async (req, res) => {
+  const collections = await Collection.find();
+  res.render("index", {collections});
 });
 
 
 
 
-router.get("/signup", (req, res) => {
-  res.render("signup");
+router.get("/signup", async (req, res) => {
+  const collections = await Collection.find();
+  res.render("signup", {collections});
 });
 
-router.get("/signin", (req, res) => {
-  res.render("signin");
+router.get("/signin", async (req, res) => {
+  const collections = await Collection.find();
+  res.render("signin", {collections});
 });
 
 
-router.get("/prod-add", (req, res, next) => {
-  res.redirect("/sneakers/create");
+router.get("/prod-add", async (req, res, next) => {
+  const collections = await Collection.find();
+  res.redirect("/sneakers/create", {collections});
 })
 
 
