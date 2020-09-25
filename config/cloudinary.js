@@ -8,19 +8,15 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
   cloud_name: process.env.CLOUDINARY_NAME,
 });
+
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "Sneakers",
-    // allowedFormats: ["jpg", "png"], // Specify the allowed formats for your uploaded files
+
     format: async (req, file) => {
-      // Format your file into jpeg/png etc...
-      // async code using `req` and `file`
-      // ...
       return "jpg";
     },
-    // format: "jpeg", // supports promises as well
-    // public_id: (req, file) => "computed-filename-using-request",
   },
 });
 

@@ -3,13 +3,15 @@ const { findById } = require("../models/Sneaker");
 const router = new express.Router(); // create an app sub-module (router)
 const Sneaker = require("../models/Sneaker");
 const Tag = require("../models/Tag");
+const Collection = require("../models/Collection");
 const uploader = require("../config/cloudinary");
 
 
 router.get("/sneakers/create", async (req, res, next) => {
   try {
     const tags = await Tag.find();
-    res.render("products_add", { scripts: ["create.js"], tags });
+    const collections = await Collection.find();
+    res.render("products_add", { scripts: ["create.js"], tags, collections});
   } catch (error) {
     next(error);
   }
@@ -19,8 +21,9 @@ router.get("/sneakers/collection", async (req, res, next) => {
   try {
     const tags = await Tag.find();
     const sneakers = await Sneaker.find();
+    const collections = await Collection.find();
 
-    res.render("products", { tags, sneakers });
+    res.render("products", { tags, sneakers, collections });
   } catch (error) {
     next(error);
   }
@@ -54,38 +57,20 @@ router.get("/product-delete/:id", async (req, res, next) => {
 router.get("/product-edit/:id", async (req, res, next) => {
   try {
     const tags = await Tag.find();
+    const collections = await Collection.find();
     const sneaker = await Sneaker.findById(req.params.id);
-    res.render("product_edit", { sneaker, tags });
+    res.render("product_edit", { sneaker, tags, collections });
   } catch (error) {
     next(error);
   }
 });
 
-router.get("/sneakers/men", async (req, res, next) => {
+router.get("/sneakers/:collection", async (req, res, next) => {
     try {
       const tags = await Tag.find();
-      const sneakers = await Sneaker.find({"category" : "men"});
-      res.render("products", { sneakers, tags });
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  router.get("/sneakers/women", async (req, res, next) => {
-    try {
-      const tags = await Tag.find();
-      const sneakers = await Sneaker.find({"category" : "women"});
-      res.render("products", { sneakers, tags });
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  router.get("/sneakers/kids", async (req, res, next) => {
-    try {
-      const tags = await Tag.find();
-      const sneakers = await Sneaker.find({"category" : "kids"});
-      res.render("products", { sneakers, tags });
+      const collections = await Collection.find();
+      const sneakers = await Sneaker.find({"category" : req.params.collection});
+      res.render("products", { sneakers, tags, collections });
     } catch (error) {
       next(error);
     }
@@ -101,11 +86,19 @@ router.post("/tag-add", async (req, res, next) => {
   }
 });
 
+router.post("/collection-add", async (req, res, next) => {
+    try {
+      const newCollection = req.body;
+      const createdCollection = await Collection.create(newCollection);
+      res.redirect("/sneakers/create");
+    } catch (error) {
+      next(error);
+    }
+  });
+
 router.post("/prod-add", uploader.single("image"), async (req, res, next) => {
   try {
     const newSneaker = req.body;
-    console.log(req.body);
-    console.log(req.file);
     if (req.file) {
         newSneaker.image = req.file.path;
       }
